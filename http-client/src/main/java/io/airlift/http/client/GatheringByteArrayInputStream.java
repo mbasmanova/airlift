@@ -17,7 +17,6 @@ import static java.util.Objects.requireNonNull;
 @ThreadSafe
 public class GatheringByteArrayInputStream
         extends InputStream
-                implements ByteArraySupplier
 {
     @GuardedBy("this")
     private final Iterator<byte[]> buffers;
@@ -120,8 +119,7 @@ public class GatheringByteArrayInputStream
         currentBufferPosition = 0;
     }
 
-    @Override
-    public Iterable<byte[]> get()
+    public Iterable<byte[]> getBuffers()
     {
         return bufferList;
     }
