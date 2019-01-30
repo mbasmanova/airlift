@@ -27,12 +27,9 @@ public interface HttpClient
     <T, E extends Exception> T execute(Request request, ResponseHandler<T, E> responseHandler)
             throws E;
 
-    default <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler)
-    {
-        return executeAsync(request, responseHandler, null);
-    }
+    <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler);
 
-    <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler, ByteArrayAllocator allocator);
+    <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler, ResponseListener responseListener);
 
     RequestStats getStats();
 

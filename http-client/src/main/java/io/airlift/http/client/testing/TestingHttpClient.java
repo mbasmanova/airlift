@@ -3,13 +3,13 @@ package io.airlift.http.client.testing;
 import com.google.common.util.concurrent.ForwardingListenableFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import io.airlift.http.client.ByteArrayAllocator;
 import io.airlift.http.client.HttpClient;
 import io.airlift.http.client.HttpClientConfig;
 import io.airlift.http.client.Request;
 import io.airlift.http.client.RequestStats;
 import io.airlift.http.client.Response;
 import io.airlift.http.client.ResponseHandler;
+import io.airlift.http.client.ResponseListener;
 import io.airlift.units.Duration;
 
 import java.util.concurrent.ExecutorService;
@@ -43,7 +43,13 @@ public class TestingHttpClient
     }
 
     @Override
-    public <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler, ByteArrayAllocator allocator)
+    public <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler, ResponseListener responseListener)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler)
     {
         requireNonNull(request, "request is null");
         requireNonNull(responseHandler, "responseHandler is null");

@@ -11,11 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.airlift.http.client;
 
-public interface ByteArrayAllocator
+import com.google.common.annotations.Beta;
+
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+
+@Beta
+public interface ResponseListener
 {
-    byte[] allocate(int size);
-    void free(byte[] bytes);
+    void onContent(ByteBuffer content);
+    InputStream onComplete();
 }

@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.net.HostAndPort;
 import com.google.common.primitives.Ints;
 import io.airlift.http.client.BodyGenerator;
-import io.airlift.http.client.ByteArrayAllocator;
 import io.airlift.http.client.FileBodyGenerator;
 import io.airlift.http.client.HttpClientConfig;
 import io.airlift.http.client.HttpRequestFilter;
 import io.airlift.http.client.Request;
 import io.airlift.http.client.RequestStats;
 import io.airlift.http.client.ResponseHandler;
+import io.airlift.http.client.ResponseListener;
 import io.airlift.http.client.StaticBodyGenerator;
 import io.airlift.http.client.jetty.HttpClientLogger.RequestInfo;
 import io.airlift.http.client.jetty.HttpClientLogger.ResponseInfo;
@@ -536,7 +536,13 @@ public class JettyHttpClient
     }
 
     @Override
-    public <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler, ByteArrayAllocator allocator)
+    public <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler)
+    {
+        return executeAsync(request, responseHandler, new BufferingResponseListener());
+    }
+
+    @Override
+    public <T, E extends Exception> HttpResponseFuture<T> executeAsync(Request request, ResponseHandler<T, E> responseHandler, ResponseListener responseListener)
     {
         requireNonNull(request, "request is null");
         requireNonNull(responseHandler, "responseHandler is null");
@@ -546,7 +552,7 @@ public class JettyHttpClient
 
         JettyResponseFuture<T, E> future = new JettyResponseFuture<>(request, jettyRequest, responseHandler, stats, recordRequestComplete);
 
-        BufferingResponseListener listener = new BufferingResponseListener(future, Ints.saturatedCast(maxContentLength), allocator);
+        DelegatingResponseListener listener = new DelegatingResponseListener(future, Ints.saturatedCast(maxContentLength), responseListener);
 
         long requestTimestamp = System.currentTimeMillis();
 

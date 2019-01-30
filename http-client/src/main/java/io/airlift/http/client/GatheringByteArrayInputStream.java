@@ -21,10 +21,6 @@ public class GatheringByteArrayInputStream
     @GuardedBy("this")
     private final Iterator<byte[]> buffers;
     @GuardedBy("this")
-    private final List<byte[]> bufferList;
-    @GuardedBy("this")
-    private final long totalBytes;
-    @GuardedBy("this")
     private final byte[] singleByte = new byte[1];
     @GuardedBy("this")
     private byte[] currentBuffer = new byte[0];
@@ -36,8 +32,7 @@ public class GatheringByteArrayInputStream
     public GatheringByteArrayInputStream(List<byte[]> buffers, long totalBytes)
     {
         checkArgument(totalBytes >= 0, "totalBytes should equal to or greater than 0");
-        this.bufferList = buffers;
-        this.totalBytes = totalBytes;
+
         this.buffers = requireNonNull(buffers, "buffers is null").iterator();
         this.remainingBytes = totalBytes;
     }
@@ -117,15 +112,5 @@ public class GatheringByteArrayInputStream
 
         currentBuffer = buffers.next();
         currentBufferPosition = 0;
-    }
-
-    public Iterable<byte[]> getBuffers()
-    {
-        return bufferList;
-    }
-
-    public long getTotalBytes()
-    {
-        return totalBytes;
     }
 }
